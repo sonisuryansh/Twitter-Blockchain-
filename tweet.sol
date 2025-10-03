@@ -18,7 +18,7 @@ contract TweeterContract{
     }
 
     mapping (uint => Tweet) public tweets;
-    mapping (address => uint[]) public tweetOf;
+    mapping (address => uint[]) public tweetsOf;
     mapping (address => Message[]) public conversations;
     mapping (address => mapping(address=>bool)) public operators;
     mapping (address => address[]) public following;
@@ -78,6 +78,26 @@ contract TweeterContract{
 
             Tweet storage _structure = tweets[i];
 
+            _tweets[j] =Tweet(
+                _structure.id, 
+                _structure.author, 
+                _structure.content , 
+                _structure.createdAt
+                );
+            j= j+1;
+        }
+        return _tweets;
+    }
+
+
+    function getLatestTweetsOfUsers (address _user , uint counts) public view returns ( Tweet[] memory){
+
+        Tweet[] memory _tweets = new Tweet[](counts);
+        uint[] memory  ids = tweetsOf[_user];
+        require (counts>0 && counts <= ids.length , "Count is Not Defined");
+        uint j;
+        for(uint i = ids.length-counts ; i<ids.length ; i++){
+             Tweet storage _structure = tweets[ids[i]];
             _tweets[j] =Tweet(
                 _structure.id, 
                 _structure.author, 
